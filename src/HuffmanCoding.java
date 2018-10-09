@@ -9,11 +9,13 @@ import java.util.PriorityQueue;
  * the encode and decode methods.
  */
 public class HuffmanCoding {
+	HuffNode huffTree;
+	
 	/**
 	 * This would be a good place to compute and store the tree.
 	 */
 	public HuffmanCoding(String text) {
-		// TODO fill this in.
+		huffTree = buildTree(text);
 	}
 	
 	/**
@@ -49,6 +51,8 @@ public class HuffmanCoding {
         	HuffNode parent = new HuffNode(null, tLeft.frequency+tRight.frequency, tLeft, tRight);
         	queue.add(parent);
         }
+        
+        //Traverse tree to assign codes
 		return queue.peek();
 		
 	}
@@ -68,7 +72,9 @@ public class HuffmanCoding {
 	 * and return the decoded text as a text string.
 	 */
 	public String decode(String encoded) {
-		// TODO fill this in.
+		//need table of codes used
+		// Label the edges of tree with 0's 1's
+		// we get a trie which can be used like a scanner to split the coded file into separate codes to be decoded
 		return "";
 	}
 
