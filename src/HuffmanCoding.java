@@ -61,7 +61,6 @@ public class HuffmanCoding {
         }
 
         while(queue.size() > 1) {
-        	System.out.println("tree");
         	HuffNode tLeft = queue.poll();
         	HuffNode tRight = queue.poll();
 
@@ -85,14 +84,13 @@ public class HuffmanCoding {
 		stack.push(root);
 
 		while(!stack.isEmpty()) {
-			System.out.println("coding");
 			HuffNode current = stack.pop();
 			HuffNode l = current.left;
 			HuffNode r = current.right;
 
 			if(l != null && r != null) {
-				l.coding += '0';
-				r.coding += '1';
+				l.coding = current.coding + '0';
+				r.coding = current.coding + '1';
 				stack.push(l);
 				stack.push(r);
 			}else {
@@ -111,7 +109,7 @@ public class HuffmanCoding {
 	 */
 	public String encode(String text) {
 		char[] textArr = text.toCharArray();
-		StringBuilder eText = new StringBuilder();
+		StringBuilder eText = new StringBuilder(); //Used a string builder as it was super slow otherwise
 		for(char c: textArr) {
 			eText.append(coding.get(c));
 		}
