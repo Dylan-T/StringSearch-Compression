@@ -32,7 +32,7 @@ import javax.swing.border.Border;
 
 /**
  * Handout code for assignment 5.
- * 
+ *
  * @author tony
  */
 public class Assignment5 {
@@ -101,8 +101,11 @@ public class Assignment5 {
 
 				// run the algorithms.
 				HuffmanCoding huffman = new HuffmanCoding(text);
+				System.out.println("Created");
 				String encoded = huffman.encode(text);
+				System.out.println("encoded");
 				String decoded = huffman.decode(encoded);
+				System.out.println("decoded");
 
 				if (!encoded.matches("[01]*"))
 					compressionOutput.append(

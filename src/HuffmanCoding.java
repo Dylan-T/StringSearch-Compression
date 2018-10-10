@@ -1,6 +1,8 @@
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 /**
  * A new instance of HuffmanCoding is created for every run. The constructor is
@@ -10,51 +12,96 @@ import java.util.PriorityQueue;
  */
 public class HuffmanCoding {
 	HuffNode huffTree;
-	
+	Map<Character, Integer> freq;
+	Map<Character, String> coding;
 	/**
 	 * This would be a good place to compute and store the tree.
 	 */
 	public HuffmanCoding(String text) {
-		huffTree = buildTree(text);
+		freq = buildFrequencies(text);
+		huffTree = buildTree(freq);
+		coding = buildCoding(huffTree);
 	}
-	
+
+
 	/**
-	 * 
+	 *
+	 * @param text to be encoded/decoded
+	 * @return map of character frequencies
+	 */
+	public Map<Character, Integer> buildFrequencies(String text){
+		HashMap<Character, Integer> freq = new HashMap<Character, Integer>();
+		char[] textArr = text.toCharArray();
+
+        // count char frequencies
+		for(char c: textArr) {
+			if(!freq.containsKey(c)) {
+				freq.put(c, 1);
+			}else {
+				freq.put(c, freq.get(c) + 1);
+			}
+		}
+		return freq;
+	}
+
+	/**
+	 *
 	 * @param text that it is building a tree of
 	 * @return the root node of the tree
 	 */
-	public HuffNode buildTree(String text) {
-		
-		char[] input = text.toCharArray();
+	public HuffNode buildTree(Map<Character, Integer> freq) {
 
-        // tabulate frequency counts
-        int[] freq = new int[256];
-        for (int i = 0; i < input.length; i++) {
-            freq[input[i]]++;
-        }
-		
 		//Make the priority queue
         PriorityQueue<HuffNode> queue = new PriorityQueue<HuffNode>(256, new FrequencyComparator());
-        
+
         //fill with singletons
-        for(int i = 0; i < freq.length; i++) {
-        	if(freq[i] > 0) {
-        		queue.add(new HuffNode((char)i, freq[i], null, null));
-        	}
+        for(char c: freq.keySet()) {
+        	HuffNode n = new HuffNode(c, freq.get(c), null, null);
+        	queue.offer(n);
         }
-		
+
         while(queue.size() > 1) {
+        	System.out.println("tree");
         	HuffNode tLeft = queue.poll();
         	HuffNode tRight = queue.poll();
-        	
+
         	//Create parent for these nodes
         	HuffNode parent = new HuffNode(null, tLeft.frequency+tRight.frequency, tLeft, tRight);
         	queue.add(parent);
         }
-        
+
         //Traverse tree to assign codes
 		return queue.peek();
-		
+	}
+
+	/**
+	 *
+	 * @param root node of the Huffman tree
+	 * @return Map of each character and their coding string.
+	 */
+	public HashMap<Character, String> buildCoding(HuffNode root){
+		HashMap<Character, String> codingMap = new HashMap<Character, String>();
+		Stack<HuffNode> stack = new Stack<HuffNode>();
+		stack.push(root);
+
+		while(!stack.isEmpty()) {
+			System.out.println("coding");
+			HuffNode current = stack.pop();
+			HuffNode l = current.left;
+			HuffNode r = current.right;
+
+			if(l != null && r != null) {
+				l.coding += '0';
+				r.coding += '1';
+				stack.push(l);
+				stack.push(r);
+			}else {
+				codingMap.put(current.value, current.coding);
+			}
+		}
+
+		return codingMap;
+
 	}
 
 	/**
@@ -63,8 +110,12 @@ public class HuffmanCoding {
 	 * only 1 and 0.
 	 */
 	public String encode(String text) {
-		// TODO fill this in.
-		return "";
+		char[] textArr = text.toCharArray();
+		StringBuilder eText = new StringBuilder();
+		for(char c: textArr) {
+			eText.append(coding.get(c));
+		}
+		return eText.toString();
 	}
 
 	/**
@@ -75,7 +126,27 @@ public class HuffmanCoding {
 		//need table of codes used
 		// Label the edges of tree with 0's 1's
 		// we get a trie which can be used like a scanner to split the coded file into separate codes to be decoded
-		return "";
+		char[] textArr = encoded.toCharArray();
+		StringBuilder dText = new StringBuilder();
+		HuffNode root = huffTree;
+		HuffNode node = root;
+
+		for(char c: textArr) {
+			if(c == '0') {
+				node = node.left;
+				if(node.left == null) {
+					dText.append(node.value);
+					node =root;
+				}
+			}else if(c == '1') {
+				node = node.right;
+				if(node.right == null) {
+					dText.append(node.value);
+					node =root;
+				}
+			}
+		}
+		return dText.toString();
 	}
 
 	/**
@@ -87,13 +158,14 @@ public class HuffmanCoding {
 	public String getInformation() {
 		return "";
 	}
-	
+
 	private class HuffNode implements Comparable<HuffNode>{
 		Character value;
 		HuffNode left;
 		HuffNode right;
 		int frequency;
-		
+		String coding = "";
+
 		public HuffNode(Character val, int freq, HuffNode left, HuffNode right) {
 			value = val;
 			frequency = freq;
@@ -105,15 +177,15 @@ public class HuffmanCoding {
 		public int compareTo(HuffNode other) {
 			return frequency - other.frequency;
 		}
-		
+
 	}
-	
+
 	private class FrequencyComparator implements Comparator<HuffNode>{
 
 		@Override
 		public int compare(HuffNode h1, HuffNode h2) {
 			return h1.frequency - h2.frequency;
 		}
-		
+
 	}
 }
