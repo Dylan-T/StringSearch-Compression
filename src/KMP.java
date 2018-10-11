@@ -5,9 +5,9 @@
  * search method to perform the search itself.
  */
 public class KMP {
-
+	int[] matchTable; 
 	public KMP(String pattern, String text) {
-		search(pattern, text);
+		matchTable = buildTable(text);
 	}
 
 	/**
@@ -17,7 +17,6 @@ public class KMP {
 	 * exists, or -1 if it doesn't.
 	 */
 	public int search(String pattern, String text) {
-		int[] matchTable = buildTable(text);
 		char[] patternArr = pattern.toCharArray();
 		char[] textArr = text.toCharArray();
 		int k = 0;
@@ -37,6 +36,26 @@ public class KMP {
 			}else {
 				k += i - matchTable[i];
 				i = matchTable[i];
+			}
+		}
+		return -1;
+	}
+	
+	public static int bruteSearch(String pattern, String text) {
+		char[] patternArr = pattern.toCharArray();
+		char[] textArr = text.toCharArray();
+		int patI = 0;
+		int textI = 0;
+		
+		while(textI + patI < textArr.length) {
+			if(textArr[textI + patI] == patternArr[patI]) {
+				patI++;
+				if(patI == patternArr.length) {
+					return textI;
+				}
+			}else {
+				textI++;
+				patI = 0;
 			}
 		}
 		return -1;

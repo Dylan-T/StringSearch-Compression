@@ -1,7 +1,9 @@
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -154,7 +156,29 @@ public class HuffmanCoding {
 	 * out the encoding tree.
 	 */
 	public String getInformation() {
-		return "";
+		StringBuilder info = new StringBuilder();
+		Queue<HuffNode> queue = new LinkedList<HuffNode>();
+		queue.add(huffTree);
+		int n = 0;
+//		int n1 = 1;
+//		
+		while(!queue.isEmpty()) {
+			HuffNode temp = queue.poll();
+			n++;
+//			info.append(temp.toString());
+			if(temp.left != null)queue.add(temp.left);
+			if(temp.right != null)queue.add(temp.right);
+//			n++;
+//			if(n == n1) {
+//				n1 *= 2;
+//				info.append("\n");
+//			}
+			
+			
+		}
+		
+		
+		return info.toString();
 	}
 
 	private class HuffNode implements Comparable<HuffNode>{
@@ -174,6 +198,10 @@ public class HuffmanCoding {
 		@Override
 		public int compareTo(HuffNode other) {
 			return frequency - other.frequency;
+		}
+		
+		public String toString() {
+			return value + ": " + coding + "|";
 		}
 
 	}

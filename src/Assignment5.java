@@ -185,8 +185,37 @@ public class Assignment5 {
 			public void actionPerformed(ActionEvent e) {
 				String pattern = searchField.getText();
 				String text = textEditor.getText();
+				long time = 0;
 				int index = new KMP(pattern, text).search(pattern, text);
-
+				int numRun = 100;
+				
+				//KMP test (Averaged over numRun runs)
+				System.out.print("KMP build table and search time: ");
+				time = System.currentTimeMillis();
+				for(int i = 0; i < numRun; i++) {
+					int kIndex = new KMP(pattern, text).search(pattern, text);
+				}
+				System.out.println((System.currentTimeMillis() - time) / numRun);
+				
+				
+				//KMP test (Averaged over 10 runs)
+				KMP kmp = new KMP(pattern, text);
+				System.out.print("KMP just search time: ");
+				time = System.currentTimeMillis();
+				for(int i = 0; i < numRun; i++) {
+					int kIndex = kmp.search(pattern, text);
+				}
+				System.out.println((System.currentTimeMillis() - time) / numRun);
+				
+				
+				//Brute test
+				System.out.print("Brute force search time: ");
+				time = System.currentTimeMillis();
+				for(int i = 0; i < numRun; i++) {
+					int bIndex = KMP.bruteSearch(pattern, text);
+				}
+				System.out.println((System.currentTimeMillis() - time) / numRun);
+				
 				if (index == -1) {
 					JOptionPane.showMessageDialog(frame, "Pattern not found.");
 				} else {
