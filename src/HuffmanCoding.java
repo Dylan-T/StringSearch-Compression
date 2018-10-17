@@ -43,6 +43,7 @@ public class HuffmanCoding {
 				freq.put(c, freq.get(c) + 1);
 			}
 		}
+		System.out.println(freq.size());
 		return freq;
 	}
 
